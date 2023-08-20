@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../model/quote.dart';
+import '../screen/form_screen.dart';
 import '../screen/quote_detail_screen.dart';
 import '../screen/quotes_list_screen.dart';
 
@@ -17,6 +18,7 @@ class MyRouterDelegate extends RouterDelegate
   }
 
   String? selectedQuote;
+  bool isForm = false;
 
   @override
   Widget build(BuildContext context) {
@@ -31,6 +33,10 @@ class MyRouterDelegate extends RouterDelegate
               selectedQuote = quoteId;
               notifyListeners();
             },
+            toFormScreen: () {
+              isForm = true;
+              notifyListeners();
+            },
           ),
         ),
         if (selectedQuote != null)
@@ -40,6 +46,16 @@ class MyRouterDelegate extends RouterDelegate
               quoteId: selectedQuote ?? "",
             ),
           ),
+        if (isForm)
+          MaterialPage(
+            key: const ValueKey("FormScreen"),
+            child: FormScreen(
+              onSend: () {
+                isForm = false;
+                notifyListeners();
+              },
+            ),
+          ),
       ],
       onPopPage: (route, result) {
         final didPop = route.didPop(result);
@@ -47,6 +63,7 @@ class MyRouterDelegate extends RouterDelegate
           return false;
         }
         selectedQuote = null;
+        isForm = false;
         notifyListeners();
         return true;
       },
